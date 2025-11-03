@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block title %}Taste the rainbow | {{ parent() }}{% endblock %}
+{% block body %}
+	<h1>Taste the rainbow</h1>
+
+	{% set colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple'] %}
+
+	<p>My name is {{ person.firstName }} {{ person.lastName | upper }} and i'm addicted to {{ person.game }}.</p>
+
+	<p>The rainbow contains {{ colors | length }} colors as of {{ "+0 year" | date('Y') }}.</p>
+
+	{% for color in colors %}
+		<div style="color:{% if color == 'yellow' %}grey{% else %}white{% endif %};background-color: {{ color }}; padding: 1em;">
+			<p>I could be {{ color }}!</p></div>
+	{% endfor %}
+
+{% endblock %}
