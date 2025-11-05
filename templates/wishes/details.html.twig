@@ -1,9 +1,25 @@
 {% extends 'base.html.twig' %}
 {% block title %}Details | {{ parent() }}{% endblock %}
 {% block body %}
-<h1>Details</h1>
-<p>Phasellus laoreet lorem vel dolor tempus vehicula. Curabitur est gravida et libero vitae dictum. Ullamco laboris nisi
-	ut aliquid ex ea commodi consequat./p>
-	{% endblock %}
+	<h1>{{ wish.title }}</h1>
+	<dl>
+		<dt>Illustration</dt>
+		{#             {% if wish.imageFilename %} #}
+		{#                     <dd><img src="{{ asset('wish.imageFilename') }}" alt="{{ wish.title }} image" /></dd> #}
+		{#             {% endif %} #}
+		<dt>Author</dt>
+		<dd>{{ wish.author }}</dd>
+		<dt>Created</dt>
+		<dd>{{ wish.dateCreated }}</dd>
+		<dt>Published</dt>
+		<dd>{{ wish.published ? "yes" : "no" }}</dd>
+		<dt>Description</dt>
+		<dd>{{ wish.description | nl2br }}</dd>
+		{% if wish.dateModified %}
+			<dt>Modified</dt>
+			<dd>{{ wish.dateModified }}</dd>
+		{% endif %}
+	</dl>
+{% endblock %}
 
 

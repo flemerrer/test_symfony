@@ -3,15 +3,13 @@
 {% block body %}
 	<h1>My Bucket List</h1>
 	<div class="bucket-list">
-		{% set buckets = [] %}
-		{% for bucket in wishes %}
+		{% for wish in wishes %}
 			<div class="card">
 				<div class="card-body">
-					<h5 class="card-title">{{ bucket.title }}</h5>
-					<h6 class="card-subtitle mb-2 text-body-secondary">Created by {{ bucket.author }}
-						on {{ bucket.dateCreated }}</h6>
-					<p class="card-text">{{ bucket.description }}</p>
-					<a class="nav-link" href={{ path('wish_edit', {{ bucket.id }}) }}>Edit wish</a>
+					<h5 class="card-title"><a href={{ path('wish_details', {'id': wish.id}) }}>{{ wish.title }}</a></h5>
+					<h6 class="card-subtitle mb-2 text-body-secondary">Created by {{ wish.author }}
+						on {{ wish.dateCreated }}</h6>
+					<a class="nav-link" href={{ path('wish_edit', { id: wish.id }) }}>Edit wish</a>
 				</div>
 			</div>
 		{% endfor %}

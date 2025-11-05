@@ -24,3 +24,4 @@
 /.idea
 .gitignore
 migrations
+public/uploads

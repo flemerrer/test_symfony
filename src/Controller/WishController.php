@@ -22,10 +22,14 @@
             return $this->render('wishes/list.html.twig', compact("wishes"));
         }
 
-        #[Route('/details', name: 'wish_details', methods: ['GET'])]
-        public function details(): Response
+        #[Route('/wishes/{id}', name: 'wish_details', methods: ['GET'])]
+        public function details(WishRepository $wishRepository, string $id): Response
         {
-            return $this->render('wishes/details.html.twig', []);
+            $wish = $wishRepository->find($id);
+            if (!$wish) {
+                return $this->redirectToRoute('wish_list');
+            }
+            return $this->render('wishes/details.html.twig', ["wish" => $wish]);
         }
 
         #[Route('/add', name: 'wish_add', methods: ['GET', 'POST'])]

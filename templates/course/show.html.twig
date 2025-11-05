@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<h1>{{ course.getName() }}</h1>
+	<h1>{{ course.name() }}</h1>
 	<dl>
 		<dt>Duration</dt>
-		<dd>{{ course.getDuration }}</dd>
+		<dd>{{ course.duration }}</dd>
 		<dt>Published</dt>
-		<dd>{{ course.getPublished ? "yes" : "no" }}</dd>
+		<dd>{{ course.published ? "yes" : "no" }}</dd>
 		<dt>Content</dt>
-		<dd>{{ course.getContent | nl2br }}</dd>
+		<dd>{{ course.content | nl2br }}</dd>
 		<dt>Created</dt>
-		<dd>{{ course.getDateCreated }}</dd>
-		{% if course.getDateModified %}
+		<dd>{{ course.dateCreated }}</dd>
+		{% if course.dateModified %}
 			<dt>Modified</dt>
-			<dd>{{ course.getDateModified }}</dd>
+			<dd>{{ course.dateModified }}</dd>
 		{% endif %}
 	</dl>
 {% endblock %}
