@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}Course List | {{ parent() }}{% endblock %}
+{% block body %}
+	<h1>Courses</h1>
+	<table class="table-sm">
+		<thead>
+		<th>Name</th>
+		<td>Duration</td>
+		<td>Published</td>
+		<td>Created</td>
+		<td>Modified</td>
+		</thead>
+		<tbody>
+		{% for course in courses %}
+			<tr>
+			<th><a href={{ path('course_show', {id: course.id}) }}>{{ course.name }}</a></th>
+			<td>{{ course.duration }}</td>
+			<td>{{ course.published }}</td>
+			<td>{{ course.dateCreated }}</td>
+			<td>{{ course.dateModified }}</td></tr>
+		{% endfor %}
+		</tbody>
+
+	</table>
+{% endblock %}

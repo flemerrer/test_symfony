@@ -2,6 +2,24 @@ body {
     background-color: ghostwhite;
 }
 
+.bg-primary {
+    background-color: #1c0d40 !important;
+}
+
+.nav-item {
+    padding-right: 1rem;
+}
+
+#logo {
+    width: 45px;
+    filter: invert(55%) sepia(100%) brightness(125%) contrast(15%) saturate(200%) hue-rotate(35deg);
+}
+
 main {
     padding: 1rem 0;
+}
+
+.bucket-list {
+    display: grid;
+    grid-gap: 1rem;
 }

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>{{ course.getName() }}</h1>
+	<dl>
+		<dt>Duration</dt>
+		<dd>{{ course.getDuration }}</dd>
+		<dt>Published</dt>
+		<dd>{{ course.getPublished ? "yes" : "no" }}</dd>
+		<dt>Content</dt>
+		<dd>{{ course.getContent | nl2br }}</dd>
+		<dt>Created</dt>
+		<dd>{{ course.getDateCreated }}</dd>
+		{% if course.getDateModified %}
+			<dt>Modified</dt>
+			<dd>{{ course.getDateModified }}</dd>
+		{% endif %}
+	</dl>
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
