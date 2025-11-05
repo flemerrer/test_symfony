@@ -5,23 +5,19 @@
     use App\Repository\WishRepository;
     use Doctrine\DBAL\Types\Types;
     use Doctrine\ORM\Mapping as ORM;
-    use Doctrine\ORM\Mapping\Entity;
     use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     use Symfony\Component\Validator\Constraints as Assert;
 
     #[UniqueEntity('title', message: 'This wish already exists!')]
-//    #[ORM\Entity(repositoryClass: WishRepository::class),  ORM\Table(name: "souhaits", )]
     #[ORM\Entity(repositoryClass: WishRepository::class)]
     class Wish
     {
-        private static int $idCount = 0;
         #[ORM\Id]
         #[ORM\GeneratedValue]
         #[ORM\Column(type: Types::INTEGER, nullable: false)]
         private ?int $id;
         #[ORM\Column(type: Types::INTEGER, nullable: false)]
         private ?int $idUser;
-//        #[ORM\Column(name: "souhait", type: Types::STRING, length: 255)]
         #[Assert\NotBlank(message: 'Please enter a title for your wish.')]
         #[Assert\Length(min: 2, max: 50, minMessage: 'Min 2 characters!', maxMessage: 'Max 250 characters!')]
         #[ORM\Column(type: Types::STRING, length: 250, nullable: false)]
@@ -40,6 +36,19 @@
         private ?\DateTimeImmutable $dateCreated = null;
         #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
         private ?\DateTimeImmutable $dateModified = null;
+
+        #[ORM\Column(type: Types::STRING, nullable: true)]
+        private string $imageFilename = '';
+
+        public function getImageFilename(): string
+        {
+            return $this->imageFilename;
+        }
+
+        public function setImageFilename(string $imageFilename): void
+        {
+            $this->imageFilename = $imageFilename;
+        }
 
         public function __construct()
         {
