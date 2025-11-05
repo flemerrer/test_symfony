@@ -51,6 +51,7 @@
                 $wish = new Wish();
                 $wish->setIdUser(rand(1, 10));
                 $wish->setTitle($wishes[$i]);
+                $wish->setImageFilename('');
                 $wish->setDescription($faker->text(200));
                 $wish->setPublished(true);
                 $wish->setAuthor($faker->name());

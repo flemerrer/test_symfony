@@ -3,10 +3,10 @@
 {% block body %}
 	<h1>{{ wish.title }}</h1>
 	<dl>
-		<dt>Illustration</dt>
-		{#             {% if wish.imageFilename %} #}
-		{#                     <dd><img src="{{ asset('wish.imageFilename') }}" alt="{{ wish.title }} image" /></dd> #}
-		{#             {% endif %} #}
+		{% if wish.imageFilename %}
+			<dt>Illustration</dt>
+			<dd><img src="/uploads/illustrations/{{ wish.imageFilename }}" alt="{{ wish.title }} image"/></dd>
+		{% endif %}
 		<dt>Author</dt>
 		<dd>{{ wish.author }}</dd>
 		<dt>Created</dt>
@@ -16,10 +16,11 @@
 		<dt>Description</dt>
 		<dd>{{ wish.description | nl2br }}</dd>
 		{% if wish.dateModified %}
-			<dt>Modified</dt>
+			<dt>Last Modified</dt>
 			<dd>{{ wish.dateModified }}</dd>
 		{% endif %}
 	</dl>
+	<button class="btn btn-primary">
+		<a class="nav-link" href={{ path('wish_edit', { id: wish.id }) }}>Edit wish</a>
+	</button>
 {% endblock %}
-
-

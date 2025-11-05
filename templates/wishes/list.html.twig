@@ -4,7 +4,13 @@
 	<h1>My Bucket List</h1>
 	<div class="bucket-list">
 		{% for wish in wishes %}
+			{% dump(wish) %}
 			<div class="card">
+				{% if wish.imageFilename %}
+					<div class="card-header">
+						<img src="{{ asset('uploads/illustrations/'~wish.imageFilename) }}" alt="{{ wish.title }}">
+					</div>
+				{% endif %}
 				<div class="card-body">
 					<h5 class="card-title"><a href={{ path('wish_details', {'id': wish.id}) }}>{{ wish.title }}</a></h5>
 					<h6 class="card-subtitle mb-2 text-body-secondary">Created by {{ wish.author }}

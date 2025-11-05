@@ -36,22 +36,24 @@
         private ?\DateTimeImmutable $dateCreated = null;
         #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
         private ?\DateTimeImmutable $dateModified = null;
-
         #[ORM\Column(type: Types::STRING, nullable: true)]
-        private string $imageFilename = '';
+        private ?string $imageFilename = null;
+
+        public function __construct()
+        {
+        }
 
         public function getImageFilename(): string
         {
-            return $this->imageFilename;
+            if ($this->imageFilename) {
+                return $this->imageFilename;
+            }
+            return "";
         }
 
         public function setImageFilename(string $imageFilename): void
         {
             $this->imageFilename = $imageFilename;
-        }
-
-        public function __construct()
-        {
         }
 
         public function setId(int $id): void
@@ -126,7 +128,10 @@
 
         public function getDateModified(): string
         {
-            return $this->dateModified->format("d/m/Y");
+            if ($this->dateModified != null) {
+                return $this->dateModified->format("d/m/y");
+            }
+            return "";
         }
 
         public function setDateModified(?\DateTimeImmutable $dateModified): void

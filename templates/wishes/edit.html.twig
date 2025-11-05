@@ -8,6 +8,12 @@
 
 		{{ form_widget(wishForm) }}
 
+		{% if wish.imageFilename %}
+			<div>
+				<img src="{{ asset('uploads/illustrations/'~wish.imageFilename) }}" alt="{{ wish.title }}"><br>
+			</div>
+		{% endif %}
+<br>
 		<button class="btn btn-primary btn-small">Save modifications</button>
 
 		{{ form_end(wishForm) }}
