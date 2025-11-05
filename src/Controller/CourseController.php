@@ -22,7 +22,7 @@
         }
 
         #[Route('/{id}', name: 'course_show', methods: ['GET'])]
-        public function show(CourseRepository $courseRepository, $id): Response
+        public function show(CourseRepository $courseRepository, int $id): Response
         {
             $course = $courseRepository->find($id);
             if(!$course){
@@ -38,28 +38,6 @@
             return $this->render('course/show.html.twig', compact("course"));
         }*/
 
-        #[Route('/add', name: 'course_add', methods: ['GET'])]
-        public function add(EntityManagerInterface $em): Response
-        {
-//            $course = new Course();
-//            $course->setName("test course");
-//            $course->setContent("no content");
-//            $course->setPublished(true);
-//            $course->setDuration(120);
-//            $course->setDateCreated(new \DateTimeImmutable());
-//            dump($course);
-//            // INSERT INTO AKA Persist with ORM
-//            $em->persist($course);
-//            $em->flush();
-//            // UPDATE : No need to call the persist again (in this case)
-//            $course->setName("Symfony 6.4");
-//            $course->setDuration(120);
-//            dump($course);
-//            // DELETE
-//            $em->remove($course);
-//            $em->flush();
-            return $this->render("about.html.twig");
-        }
     }
 
 ?>

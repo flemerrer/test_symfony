@@ -11,6 +11,7 @@
 					<h6 class="card-subtitle mb-2 text-body-secondary">Created by {{ bucket.author }}
 						on {{ bucket.dateCreated }}</h6>
 					<p class="card-text">{{ bucket.description }}</p>
+					<a class="nav-link" href={{ path('wish_edit', {{ bucket.id }}) }}>Edit wish</a>
 				</div>
 			</div>
 		{% endfor %}

@@ -44,6 +44,20 @@
             return $this->render('wishes/add.html.twig', ["wishForm" => $form]);
         }
 
+        #[Route('/edit/{id}', name: 'wish_edit', methods: ['GET', 'POST'])]
+        public function edit(Wish $wish, Request $request, EntityManagerInterface $em): Response
+        {
+            $form = $this->createForm(WishType::class, $wish);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $wish->setDateModified(new \DateTimeImmutable());
+                $em->persist($wish);
+                $em->flush();
+                $this->addFlash('success', 'Wish modified successfully!');
+                return $this->redirectToRoute('wish_list');
+            }
+            return $this->render('wishes/edit.html.twig', ["wish" => $wish, "wishForm" => $form]);
+        }
     }
 
 ?>

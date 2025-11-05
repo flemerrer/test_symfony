@@ -10,9 +10,13 @@ body {
     padding-right: 1rem;
 }
 
+.nav-link {
+    color: ghostwhite;
+}
+
 #logo {
     width: 45px;
-    filter: invert(55%) sepia(100%) brightness(125%) contrast(15%) saturate(200%) hue-rotate(35deg);
+    filter: invert(100%) brightness(200%) saturate(200%);
 }
 
 main {
