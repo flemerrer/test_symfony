@@ -84,6 +84,10 @@ class Trainer
         return $this;
     }
 
+    public function getName(): string {
+        return $this->firstName.' '.$this->lastName;
+    }
+
     public function getDateModified(): ?\DateTimeImmutable
     {
         return $this->dateModified;

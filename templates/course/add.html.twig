@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}Course List | {{ parent() }}{% endblock %}
+{% block body %}
+<div>
+	<h1>Add Course
+	</h1>
+	{{ form_start(courseForm) }}
+
+	{{ form_widget(courseForm) }}
+
+	<button class="btn btn-primary btn-small" type="submit">Add Course</button>
+
+	{{ form_end(courseForm) }}
+</div>
+{% endblock %}

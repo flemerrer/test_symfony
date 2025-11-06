@@ -2,10 +2,10 @@
     namespace App\Controller;
 
     use App\Entity\Course;
-    use App\Repository\CourseRepository;
+    use App\Form\CourseType;use App\Repository\CourseRepository;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-    use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\HttpFoundation\Request;use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
 
     #[Route('/courses')]
@@ -21,8 +21,23 @@
             return $this->render('course/list.html.twig', compact("courses"));
         }
 
+        #[Route('/add', name: 'course_add', methods: ['GET', 'POST'])]
+        public function add(Request $request, EntityManagerInterface $em): Response
+        {
+            $course = new Course();
+            $form = $this->createForm(CourseType::class, $course);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $course->setDateCreated(new \DateTimeImmutable());
+                $em->persist($course);
+                $em->flush();
+                return $this->redirectToRoute('course_show', ['id' => $course->getId()]);
+            }
+            return $this->render('course/add.html.twig', ["courseForm" => $form]);
+        }
+
         #[Route('/{id}', name: 'course_show', methods: ['GET'])]
-        public function show(CourseRepository $courseRepository, int $id): Response
+        public function show(CourseRepository $courseRepository, $id): Response
         {
             $course = $courseRepository->find($id);
             if(!$course){

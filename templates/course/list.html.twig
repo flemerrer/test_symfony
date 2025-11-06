@@ -6,6 +6,8 @@
 		<thead>
 		<th>Name</th>
 		<td>Duration</td>
+		<td>Category</td>
+		<td>Trainers</td>
 		<td>Published</td>
 		<td>Created</td>
 		<td>Modified</td>
@@ -15,7 +17,9 @@
 			<tr>
 			<th><a href={{ path('course_show', {id: course.id}) }}>{{ course.name }}</a></th>
 			<td>{{ course.duration }}</td>
-			<td>{{ course.published }}</td>
+			<td>{{ course.category.name }}</td>
+			<td>{{ course.trainers | length }}</td>
+			<td>{{ course.published ? "yes" : "no" }}</td>
 			<td>{{ course.dateCreated }}</td>
 			<td>{{ course.dateModified }}</td></tr>
 		{% endfor %}

@@ -89,7 +89,10 @@ class Course
 
     public function getDateCreated(): string
     {
-        return $this->dateCreated->format("d/m/y");
+        if ($this->dateCreated != null) {
+            return $this->dateCreated->format("d/m/y");
+        }
+        return "";
     }
 
     public function setDateCreated(\DateTimeImmutable $dateCreated): void
