@@ -2,10 +2,12 @@
     namespace App\Controller;
 
     use App\Entity\Course;
-    use App\Form\CourseType;use App\Repository\CourseRepository;
+    use App\Form\CourseType;
+    use App\Repository\CourseRepository;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-    use Symfony\Component\HttpFoundation\Request;use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\HttpFoundation\Request;
+    use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
 
     #[Route('/courses')]
@@ -40,19 +42,49 @@
         public function show(CourseRepository $courseRepository, $id): Response
         {
             $course = $courseRepository->find($id);
-            if(!$course){
+            if (!$course) {
                 return $this->redirectToRoute('course_home');
             }
             return $this->render('course/show.html.twig', compact("course"));
         }
 
-/*        // Version avec le ParamConverter :
-        #[Route('/{id}', name: 'course_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-        public function show(Course $course, CourseRepository $courseRepository, $id): Response
-        {
-            return $this->render('course/show.html.twig', compact("course"));
-        }*/
+        /*        // Version avec le ParamConverter :
+                #[Route('/{id}', name: 'course_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+                public function show(Course $course, CourseRepository $courseRepository, $id): Response
+                {
+                    return $this->render('course/show.html.twig', compact("course"));
+                }*/
 
+        #[Route('/{id}/edit', name: 'course_edit', methods: ['GET', 'POST'])]
+        public function edit(Request $request, CourseRepository $courseRepository, EntityManagerInterface $em, $id): Response
+        {
+            $course = $courseRepository->find($id);
+            $form = $this->createForm(CourseType::class, $course);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $course->setDateModified(new \DateTimeImmutable());
+                $em->persist($course);
+                $em->flush();
+                $this->addFlash('success', 'Course modified successfully!');
+                return $this->redirectToRoute('course_show', ['id' => $course->getId()]);
+            }
+            return $this->render('course/edit.html.twig', ["course" => $course, "courseForm" => $form]);
+        }
+
+        #[Route('/{id}/delete/{token}', name: 'course_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
+        public function delete(Course $course, EntityManagerInterface $em, string $token): Response
+        {
+            //need csrf protection here
+            if ($this->isCsrfTokenValid('delete-course-' . $course->getId(), $token)) {
+                $em->remove($course);
+                $em->flush();
+                $this->addFlash('success', 'Course deleted successfully!');
+                return $this->redirectToRoute('course_home');
+            }
+            $this->addFlash('danger', 'Course deletion failed!');
+            return $this->redirectToRoute('course_show', ['id' => $course->getId()]);
+        }
     }
 
 ?>

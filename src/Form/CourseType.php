@@ -17,7 +17,7 @@ class CourseType extends AbstractType
         $builder
             ->add('name')
             ->add('content')
-            ->add('duration')
+            ->add('duration', null, ['label' => 'Duration (days)'])
             ->add('published')
             ->add('category', EntityType::class, [
                 'class' => Category::class,
@@ -25,6 +25,7 @@ class CourseType extends AbstractType
                 'placeholder' => 'Choose one'
             ])
             ->add('trainers', EntityType::class, [
+                'label' => "Trainers (select at least one)",
                 'class' => Trainer::class,
                 'choice_label' => 'getName',
                 'multiple' => true,

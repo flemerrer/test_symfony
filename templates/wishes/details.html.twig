@@ -20,7 +20,5 @@
 			<dd>{{ wish.dateModified }}</dd>
 		{% endif %}
 	</dl>
-	<button class="btn btn-primary">
-		<a class="nav-link" href={{ path('wish_edit', { id: wish.id }) }}>Edit wish</a>
-	</button>
+	<a class="btn btn-secondary" href={{ path('wish_edit', { id: wish.id }) }}>Edit wish</a>
 {% endblock %}

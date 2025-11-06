@@ -22,6 +22,8 @@
 			<dd>{{ course.dateModified }}</dd>
 		{% endif %}
 	</dl>
+	<a class="btn btn-primary" href={{ path('course_edit', { id: course.id }) }}>Edit course</a>
+	<a class="btn btn-danger" href={{ path('course_delete', { id: course.id, token: csrf_token('delete-course-'~course.id) }) }}>Delete course</a>
 {% endblock %}
 
 {% block title %}
