@@ -75,7 +75,6 @@
         #[Route('/{id}/delete/{token}', name: 'course_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
         public function delete(Course $course, EntityManagerInterface $em, string $token): Response
         {
-            //need csrf protection here
             if ($this->isCsrfTokenValid('delete-course-' . $course->getId(), $token)) {
                 $em->remove($course);
                 $em->flush();

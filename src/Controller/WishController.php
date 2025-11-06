@@ -66,7 +66,7 @@
         }
 
         #[Route('/{id}/edit', name: 'wish_edit', methods: ['GET', 'POST'])]
-        public function edit(Wish $wish, Request $request, EntityManagerInterface $em, #[Autowire('%kernel.project_dir%/public/uploads/illustrations')] string $uploadedImagesDir): Response
+        public function edit(Wish $wish, Request $request, SluggerInterface $slugger, EntityManagerInterface $em, #[Autowire('%kernel.project_dir%/public/uploads/illustrations')] string $uploadedImagesDir): Response
         {
             $form = $this->createForm(WishType::class, $wish);
             $form->handleRequest($request);
@@ -77,6 +77,19 @@
                     $wish->setImageFilename('');
                 }
 
+                $file = $form->get('illustration')->getData();
+                if ($file) {
+                    $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+                    try {
+                        $file->move($uploadedImagesDir, $newFilename);
+                        $wish->setImageFilename($newFilename);
+                    } catch (FileException $e) {
+                        $this->addFlash('error', $e->getMessage());
+                    }
+                }
+
                 $wish->setDateModified(new \DateTimeImmutable());
                 $em->persist($wish);
                 $em->flush();
@@ -84,6 +97,21 @@
                 return $this->redirectToRoute('wish_details', ['id' => $wish->getId()]);
             }
             return $this->render('wishes/edit.html.twig', ["wish" => $wish, "wishForm" => $form]);
+        }
+
+
+        #[Route('/{id}/delete/{token}', name: 'wish_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
+        public function delete(Wish $wish, EntityManagerInterface $em, string $token): Response
+        {
+
+            if ($this->isCsrfTokenValid('delete-wish-' . $wish->getId(), $token)) {
+                $em->remove($wish);
+                $em->flush();
+                $this->addFlash('success', 'Wish deleted successfully!');
+                return $this->redirectToRoute('wish_list');
+            }
+            $this->addFlash('danger', 'Wish deletion failed!');
+            return $this->redirectToRoute('wish_details', ['id' => $wish->getId()]);
         }
     }
 

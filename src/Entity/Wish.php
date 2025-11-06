@@ -39,6 +39,9 @@
         #[ORM\Column(type: Types::STRING, nullable: true)]
         private ?string $imageFilename = null;
 
+        #[ORM\ManyToOne(inversedBy: 'wishes')]
+        private ?WishCategory $wishCategory = null;
+
         public function __construct()
         {
         }
@@ -137,6 +140,16 @@
         public function setDateModified(?\DateTimeImmutable $dateModified): void
         {
             $this->dateModified = $dateModified;
+        }
+
+        public function getWishCategory(): ?WishCategory
+        {
+            return $this->wishCategory;
+        }
+
+        public function setWishCategory(?WishCategory $wishCategory): void
+        {
+            $this->wishCategory = $wishCategory;
         }
 
     }
