@@ -27,3 +27,7 @@ main {
     display: grid;
     grid-gap: 1rem;
 }
+
+.card-header> img {
+    max-height: 350px;
+}

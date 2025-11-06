@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CourseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,20 @@ class Course
     private ?\DateTimeImmutable $dateCreated = null;
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $dateModified = null;
+
+    #[ORM\ManyToOne(inversedBy: 'courses')]
+    private ?Category $category = null;
+
+    /**
+     * @var Collection<int, Trainer>
+     */
+    #[ORM\ManyToMany(targetEntity: Trainer::class, inversedBy: 'courses')]
+    private Collection $trainers;
+
+    public function __construct()
+    {
+        $this->trainers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,6 +122,42 @@ class Course
             . "published: " . $this->getPublished() . "\n"
             . "dateCreated: " . $this->getDateCreated() . "\n"
             . "dateModified: " . $this->getDateModified();
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trainer>
+     */
+    public function getTrainers(): Collection
+    {
+        return $this->trainers;
+    }
+
+    public function addTrainer(Trainer $trainer): static
+    {
+        if (!$this->trainers->contains($trainer)) {
+            $this->trainers->add($trainer);
+        }
+
+        return $this;
+    }
+
+    public function removeTrainer(Trainer $trainer): static
+    {
+        $this->trainers->removeElement($trainer);
+
+        return $this;
     }
 
 
