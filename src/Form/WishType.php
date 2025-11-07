@@ -34,7 +34,6 @@
             });
 
             $builder
-                ->add('idUser', TextType::class, ['label' => 'User ID'])
                 ->add('title', TextType::class, ['label' => 'Title'])
                 ->add('wishCategory', EntityType::class, [
                     'class' => WishCategory::class,
@@ -42,7 +41,6 @@
                     'placeholder' => 'Choose a category'
                 ])
                 ->add('description', TextAreaType::class, ['label' => 'Description'])
-                ->add('author', TextType::class, ['label' => 'Author'])
                 ->add('published', CheckboxType::class, ['label' => 'Published Status', 'required' => false])
                 ->add('illustration', FileType::class, [
                     'label' => 'Image',

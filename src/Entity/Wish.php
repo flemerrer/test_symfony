@@ -22,11 +22,11 @@
         #[Assert\Length(min: 2, max: 50, minMessage: 'Min 2 characters!', maxMessage: 'Max 250 characters!')]
         #[ORM\Column(type: Types::STRING, length: 250, nullable: false)]
         private ?string $title;
-        #[Assert\NotBlank(message: 'Please type your name or username')]
+        #[Assert\NotBlank(message: 'Please enter a description (min 10 chars).')]
         #[Assert\Length(min: 10, max: 2000, minMessage: 'Min 10 characters!', maxMessage: 'Max 2000 characters!')]
         #[ORM\Column(type: Types::STRING)]
         private ?string $description;
-        #[Assert\NotBlank(message: 'Please type your name or username')]
+
         #[Assert\Length(min: 2, max: 50, minMessage: 'Min 2 characters!', maxMessage: 'Max 50 characters!')]
         #[ORM\Column(type: Types::STRING, length: 50, nullable: false)]
         private ?string $author;

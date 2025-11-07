@@ -33,6 +33,9 @@
             $form = $this->createForm(WishType::class, $wish);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
+                $user = $this->getUser();
+                $wish->setAuthor($user->getUsername());
+                $wish->setIdUser($user->getId());
                 $file = $form->get('illustration')->getData();
                 if ($file) {
                     $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
