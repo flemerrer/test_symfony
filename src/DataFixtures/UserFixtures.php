@@ -19,13 +19,21 @@
 
             $faker = \Faker\Factory::create('fr_FR');
 
-            $user = new User();
-            $user->setFirstName("toto");
-            $user->setLastName("lebg");
-            $user->setEmail("toto@admin.fr");
-            $user->setRoles(["ROLE_ADMIN"]);
-            $user->setPassword($this->usher->hashPassword($user, "africa"));
-            $manager->persist($user);
+            $user1 = new User();
+            $user1->setFirstName("grosminet");
+            $user1->setLastName("lebg");
+            $user1->setEmail("toto@admin.fr");
+            $user1->setRoles(["ROLE_ADMIN"]);
+            $user1->setPassword($this->usher->hashPassword($user1, "africa"));
+            $manager->persist($user1);
+
+            $user2 = new User();
+            $user2->setFirstName("titi");
+            $user2->setLastName("leboss");
+            $user2->setEmail("titi@planner.fr");
+            $user2->setRoles(["ROLE_PLANNER"]);
+            $user2->setPassword($this->usher->hashPassword($user2, "africa"));
+            $manager->persist($user2);
 
             for ($i = 0; $i < 10; $i++) {
                 $user = new User();

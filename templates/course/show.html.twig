@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Course List | {{ parent() }}{% endblock %}
 {% block body %}
 	<h1>{{ course.name() }}</h1>
 	<dl>
@@ -7,10 +7,14 @@
 		<dd>{{ course.duration }}</dd>
 		<dt>Category</dt>
 		<dd>{{ course.category.name }}</dd>
-		<dt>Teachers</dt>
-		<dd><ul>{% for teacher in course.trainers %}
-				<li>{{ teacher.firstName }} {{ teacher.lastName }}</li>
-				{% endfor %}</ul></dd>
+		{% if is_granted('ROLE_PLANNER') %}
+			<dt>Teachers</dt>
+			<dd>
+				<ul>{% for teacher in course.trainers %}
+						<li>{{ teacher.firstName }} {{ teacher.lastName }}</li>
+					{% endfor %}</ul>
+			</dd>
+		{% endif %}
 		<dt>Published</dt>
 		<dd>{{ course.published ? "yes" : "no" }}</dd>
 		<dt>Content</dt>
@@ -23,10 +27,7 @@
 		{% endif %}
 	</dl>
 	<a class="btn btn-primary" href={{ path('course_edit', { id: course.id }) }}>Edit course</a>
-	<a class="btn btn-danger" href={{ path('course_delete', { id: course.id, token: csrf_token('delete-course-'~course.id) }) }}>Delete course</a>
+	<a class="btn btn-danger"
+	   href={{ path('course_delete', { id: course.id, token: csrf_token('delete-course-'~course.id) }) }}>Delete
+		course</a>
 {% endblock %}
-
-{% block title %}
-
-{% endblock %}
-

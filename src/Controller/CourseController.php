@@ -9,6 +9,7 @@
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
+    use Symfony\Component\Security\Http\Attribute\IsGranted;
 
     #[Route('/courses')]
     class CourseController extends AbstractController
@@ -55,6 +56,13 @@
                     return $this->render('course/show.html.twig', compact("course"));
                 }*/
 
+        #[Route('/{id}/trainers', name: 'course_trainers', methods: ['GET'], requirements: ['id' => '\d+'])]
+        // Manual security check for role
+        #[IsGranted("ROLE_PLANNER")]
+        public function trainers (Course $course) {
+            return $this->render('course/trainers.html.twig', compact("course"));
+        }
+
         #[Route('/{id}/edit', name: 'course_edit', methods: ['GET', 'POST'])]
         public function edit(Request $request, CourseRepository $courseRepository, EntityManagerInterface $em, $id): Response
         {
@@ -84,6 +92,7 @@
             $this->addFlash('danger', 'Course deletion failed!');
             return $this->redirectToRoute('course_show', ['id' => $course->getId()]);
         }
+
     }
 
 ?>

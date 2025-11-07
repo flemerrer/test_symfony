@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}Teachers List | {{ parent() }}{% endblock %}
+{% block body %}
+	<h1><i>{{ course.name }}</i> teachers:</h1>
+	<ul>
+		{% for trainer in course.trainers %}
+			<li>{{ trainer.getName }}</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

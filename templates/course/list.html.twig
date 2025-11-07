@@ -15,13 +15,18 @@
 		<tbody>
 		{% for course in courses %}
 			<tr>
-			<th><a href={{ path('course_show', {id: course.id}) }}>{{ course.name }}</a></th>
-			<td>{{ course.duration }}</td>
-			<td>{{ course.category.name }}</td>
-			<td>{{ course.trainers | length }}</td>
-			<td>{{ course.published ? "yes" : "no" }}</td>
-			<td>{{ course.dateCreated }}</td>
-			<td>{{ course.dateModified }}</td></tr>
+				<th><a href={{ path('course_show', {id: course.id}) }}>{{ course.name }}</a></th>
+				<td>{{ course.duration }}</td>
+				<td>{{ course.category.name }}</td>
+				<td>
+					{% if is_granted('ROLE_PLANNER') %}
+						<a href="{{ path('course_show', {id: course.id}) }}">{{ course.trainers | length }} teachers</a>
+					{% endif %}
+				</td>
+				<td>{{ course.published ? "yes" : "no" }}</td>
+				<td>{{ course.dateCreated }}</td>
+				<td>{{ course.dateModified }}</td>
+			</tr>
 		{% endfor %}
 		</tbody>
 
