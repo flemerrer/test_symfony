@@ -20,7 +20,7 @@
         #[Route('/', name: 'wish_list', methods: ['GET'])]
         public function bucketList(WishRepository $wishRepository): Response
         {
-            $wishes = $wishRepository->findBy(["published" => true]);
+            $wishes = $wishRepository->getAllWishes();
 //            return new Response(json_encode(implode(', ', $array)));
             return $this->render('wishes/list.html.twig', compact("wishes"));
         }
@@ -33,9 +33,7 @@
             $form = $this->createForm(WishType::class, $wish);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $user = $this->getUser();
-                $wish->setAuthor($user->getUsername());
-                $wish->setIdUser($user->getId());
+                $wish->setAuthor($this->getUser());
                 $file = $form->get('illustration')->getData();
                 if ($file) {
                     $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);

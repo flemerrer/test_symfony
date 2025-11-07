@@ -17,6 +17,19 @@
             parent::__construct($registry, Wish::class);
         }
 
+        public function getAllWishes() {
+            $queryBuilder = $this->createQueryBuilder('c');
+            $queryBuilder
+                ->addSelect('author')
+                ->leftJoin('c.author', 'author')
+                ->addSelect('category')
+                ->leftJoin('c.wishCategory', 'category')
+                ->andWhere('c.published = true')
+                ->addOrderBy("c.dateCreated", "DESC");
+            $query=$queryBuilder->getQuery();
+            return $query->getResult();
+        }
+
         //    /**
         //     * @return Wish[] Returns an array of Course objects
         //     */

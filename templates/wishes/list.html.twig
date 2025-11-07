@@ -13,7 +13,7 @@
 				{% endif %}
 				<div class="card-body">
 					<h5 class="card-title"><a href={{ path('wish_details', {'id': wish.id}) }}>{{ wish.title }} [{{ wish.wishCategory.name }}]</a></h5>
-					<h6 class="card-subtitle mb-2 text-body-secondary">Created by {{ wish.author }}
+					<h6 class="card-subtitle mb-2 text-body-secondary">Created by {{ wish.author.username }}
 						on {{ wish.dateCreated }}</h6>
 					<a class="nav-link" href={{ path('wish_edit', { id: wish.id }) }}>Edit wish</a>
 				</div>

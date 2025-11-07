@@ -2,12 +2,14 @@
 
     namespace App\DataFixtures;
 
+    use App\Entity\User;
     use App\Entity\Wish;
     use App\Entity\WishCategory;
     use Doctrine\Bundle\FixturesBundle\Fixture;
+    use Doctrine\Common\DataFixtures\DependentFixtureInterface;
     use Doctrine\Persistence\ObjectManager;
 
-    class WishFixtures extends Fixture
+    class WishFixtures extends Fixture implements DependentFixtureInterface
     {
         public function load(ObjectManager $manager): void
         {
@@ -38,7 +40,7 @@
                 $wish->setPublished(true);
                 $wishCat = $this->getReference("wish_category_".$faker->numberBetween(1, 5), WishCategory::class);
                 $wish->setWishCategory($wishCat);
-                $wish->setAuthor($faker->name());
+                $wish->setAuthor($this->getReference("user$i", User::class));
                 $dateCreated = $faker->dateTimeBetween("-2 years", 'now');
                 $wish->setDateCreated(\DateTimeImmutable::createFromMutable($dateCreated));
                 $dateModified = $faker->optional(75)->dateTimeBetween($dateCreated, 'now');
@@ -49,5 +51,10 @@
             }
 
             $manager->flush();
+        }
+
+        public function getDependencies(): array
+        {
+            return [UserFixtures::class];
         }
     }

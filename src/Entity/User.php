@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -39,8 +40,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank()]
     #[Assert\Length(max: 100)]
-    #[ORM\Column(length: 100, nullable: false)]
+    #[ORM\Column(length: 100, nullable: false, unique: true)]
     private ?string $username = null;
+
+    #[ORM\OneToMany(targetEntity: Wish::class, mappedBy: 'author')]
+    private Collection $wishes;
 
     public function getId(): ?int
     {

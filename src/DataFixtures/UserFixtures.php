@@ -17,6 +17,8 @@
         public function load(ObjectManager $manager): void
         {
 
+            $faker = \Faker\Factory::create("fr_FR");
+
             $user1 = new User();
             $user1->setUsername("grosminet");
             $user1->setEmail("toto@admin.fr");
@@ -33,11 +35,12 @@
 
             for ($i = 0; $i < 10; $i++) {
                 $user = new User();
-                $user->setUsername("user$i");
+                $user->setUsername($faker->userName());
                 $user->setEmail("user$i@pandata.fr");
                 $user->setRoles(["ROLE_USER"]);
                 $user->setPassword($this->usher->hashPassword($user, "toto@123"));
                 $manager->persist($user);
+                $this->addReference('user'.$i, $user);
             }
 
             $manager->flush();

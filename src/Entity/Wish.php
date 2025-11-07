@@ -16,8 +16,7 @@
         #[ORM\GeneratedValue]
         #[ORM\Column(type: Types::INTEGER, nullable: false)]
         private ?int $id;
-        #[ORM\Column(type: Types::INTEGER, nullable: false)]
-        private ?int $idUser;
+
         #[Assert\NotBlank(message: 'Please enter a title for your wish.')]
         #[Assert\Length(min: 2, max: 50, minMessage: 'Min 2 characters!', maxMessage: 'Max 250 characters!')]
         #[ORM\Column(type: Types::STRING, length: 250, nullable: false)]
@@ -26,10 +25,8 @@
         #[Assert\Length(min: 10, max: 2000, minMessage: 'Min 10 characters!', maxMessage: 'Max 2000 characters!')]
         #[ORM\Column(type: Types::STRING)]
         private ?string $description;
-
-        #[Assert\Length(min: 2, max: 50, minMessage: 'Min 2 characters!', maxMessage: 'Max 50 characters!')]
-        #[ORM\Column(type: Types::STRING, length: 50, nullable: false)]
-        private ?string $author;
+        #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishes')]
+        private ?User $author;
         #[ORM\Column(type: Types::BOOLEAN, nullable: false)]
         private ?bool $published = null;
         #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
@@ -74,11 +71,6 @@
             return $this->id;
         }
 
-        public function getIdUser(): int
-        {
-            return $this->idUser;
-        }
-
         public function getTitle(): ?string
         {
             return $this->title;
@@ -99,12 +91,12 @@
             $this->description = $description;
         }
 
-        public function getAuthor(): ?string
+        public function getAuthor(): ?User
         {
             return $this->author;
         }
 
-        public function setAuthor(?string $author): void
+        public function setAuthor(?User $author): void
         {
             $this->author = $author;
         }
