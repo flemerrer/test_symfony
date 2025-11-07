@@ -5,6 +5,7 @@
     use App\Entity\Comment;
     use App\Form\CommentType;
     use App\Form\WishType;
+    use App\Helper\WishService;
     use App\Repository\WishRepository;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +20,14 @@
     #[Route('/wishes')]
     class WishController extends AbstractController
     {
+
+        public function __construct(
+            private readonly WishService $service,
+            private readonly EntityManagerInterface $em
+        )
+        {
+        }
+
         #[Route('/', name: 'wish_list', methods: ['GET'])]
         public function bucketList(WishRepository $wishRepository): Response
         {
@@ -28,7 +37,7 @@
         }
 
         #[Route('/add', name: 'wish_add', methods: ['GET', 'POST'])]
-        public function add(Request $request, EntityManagerInterface $em, SluggerInterface $slugger,
+        public function add(Request                                                                 $request, SluggerInterface $slugger,
                             #[Autowire('%kernel.project_dir%/public/uploads/illustrations')] string $uploadedImagesDir): Response
         {
             $wish = new Wish();
@@ -38,20 +47,14 @@
                 $wish->setAuthor($this->getUser());
                 $file = $form->get('illustration')->getData();
                 if ($file) {
-                    $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                    $safeFilename = $slugger->slug($originalFilename);
-                    $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
                     try {
-                        $file->move($uploadedImagesDir, $newFilename);
-                        $wish->setImageFilename($newFilename);
+                        $this->service->saveImage($slugger, $uploadedImagesDir, $wish, $file);
                     } catch (FileException $e) {
                         $this->addFlash('error', $e->getMessage());
                     }
                 }
-
-                $wish->setDateCreated(new \DateTimeImmutable());
-                $em->persist($wish);
-                $em->flush();
+                $this->em->persist($wish);
+                $this->em->flush();
                 $this->addFlash('success', 'Wish added successfully!');
                 return $this->redirectToRoute('wish_details', ['id' => $wish->getId()]);
             }
@@ -59,7 +62,7 @@
         }
 
         #[Route('/{id}', name: 'wish_details', methods: ['GET', 'POST'])]
-        public function details(Request $request, EntityManagerInterface $em, WishRepository $wishRepository, string $id): Response
+        public function details(Request $request, WishRepository $wishRepository, string $id): Response
         {
             $wish = $wishRepository->find($id);
             if (!$wish) {
@@ -69,12 +72,9 @@
             $comment = new Comment();
             $form = $this->createForm(CommentType::class, $comment);
             $form->handleRequest($request);
+            $user = $this->getUser();
             if ($form->isSubmitted() && $form->isValid()) {
-                $comment->setWish($wish);
-                $comment->setAuthor($this->getUser());
-                $comment->setDateCreated(new \DateTimeImmutable());
-                $em->persist($comment);
-                $em->flush();
+                $this->service->addComment($wish, $comment, $user);
                 $this->addFlash('success', 'Comment added successfully!');
             }
 
@@ -82,33 +82,29 @@
         }
 
         #[Route('/{id}/edit', name: 'wish_edit', methods: ['GET', 'POST'])]
-        public function edit(Wish $wish, Request $request, SluggerInterface $slugger, EntityManagerInterface $em, #[Autowire('%kernel.project_dir%/public/uploads/illustrations')] string $uploadedImagesDir): Response
+        public function edit(Wish $wish, Request $request, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/illustrations')] string $uploadedImagesDir): Response
         {
             $form = $this->createForm(WishType::class, $wish);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
 
                 if ($form->has('deleteCb')) {
-                    unlink($uploadedImagesDir.'/'.$wish->getImageFilename());
+                    unlink($uploadedImagesDir . '/' . $wish->getImageFilename());
                     $wish->setImageFilename('');
                 }
 
                 $file = $form->get('illustration')->getData();
                 if ($file) {
-                    $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                    $safeFilename = $slugger->slug($originalFilename);
-                    $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
                     try {
-                        $file->move($uploadedImagesDir, $newFilename);
-                        $wish->setImageFilename($newFilename);
+                        $this->service->saveImage($slugger, $uploadedImagesDir, $wish, $file);
                     } catch (FileException $e) {
                         $this->addFlash('error', $e->getMessage());
                     }
                 }
 
                 $wish->setDateModified(new \DateTimeImmutable());
-                $em->persist($wish);
-                $em->flush();
+                $this->em->persist($wish);
+                $this->em->flush();
                 $this->addFlash('success', 'Wish modified successfully!');
                 return $this->redirectToRoute('wish_details', ['id' => $wish->getId()]);
             }
@@ -117,12 +113,12 @@
 
 
         #[Route('/{id}/delete/{token}', name: 'wish_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
-        public function delete(Wish $wish, EntityManagerInterface $em, string $token): Response
+        public function delete(Wish $wish, string $token): Response
         {
 
             if ($this->isCsrfTokenValid('delete-wish-' . $wish->getId(), $token)) {
-                $em->remove($wish);
-                $em->flush();
+                $this->em->remove($wish);
+                $this->em->flush();
                 $this->addFlash('success', 'Wish deleted successfully!');
                 return $this->redirectToRoute('wish_list');
             }

@@ -3,11 +3,11 @@
 {% block body %}
 	<div class="card" style="padding: 1rem">
 		{% if is_granted('ROLE_ADMIN') %}
-			<div style="display: flex;flex-direction: row;justify-content: end;"><a class="btn btn-primary btn-small" href={{ path('wish_edit', { id: wish.id }) }}>Edit wish</a>
+			<div style="display: flex;flex-direction: row;justify-content: end;"><a class="btn btn-primary btn-small" href={{ path('wish_edit', { id: wish.id }) }}>Edit Wish</a>
 				<a class="btn btn-danger btn-small"
 				   style="margin-left: .25rem"
 				   href={{ path('wish_delete', { id: wish.id, token: csrf_token('delete-wish-'~wish.id) }) }}>Delete
-					wish</a></div>
+					Wish</a></div>
 		{% endif %}
 		<h1>{{ wish.title }}</h1>
 		<p><b>{{ wish.wishCategory.name }}</b> <i>Created by {{ wish.author.username }} on {{ wish.dateCreated }}</i>
@@ -33,7 +33,7 @@
 					{% if is_granted('ROLE_ADMIN') %}
 						<div><a class="btn btn-danger btn-small"
 								href={{ path('comment_delete', { id: comment.id, token: csrf_token('delete-comment-'~comment.id) }) }}>Delete
-								wish</a></div>
+								Comment</a></div>
 					{% endif %}
 				</div>
 			{% endfor %}

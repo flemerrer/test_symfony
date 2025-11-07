@@ -1,47 +1,54 @@
 <?php
 
-namespace App\Controller;
+    namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationFormType;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
+    use App\Entity\User;
+    use App\Form\RegistrationFormType;
+    use App\Helper\NotificationSender;
+    use Doctrine\ORM\EntityManagerInterface;
+    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+    use Symfony\Bundle\SecurityBundle\Security;
+    use Symfony\Component\HttpFoundation\Request;
+    use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+    use Symfony\Component\Routing\Attribute\Route;
 
-class RegistrationController extends AbstractController
-{
-    #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    class RegistrationController extends AbstractController
     {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
+        #[Route('/register', name: 'app_register')]
+        public function register(
+            NotificationSender          $sender,
+            Request                     $request,
+            UserPasswordHasherInterface $userPasswordHasher,
+            Security                    $security,
+            EntityManagerInterface      $entityManager
+        ): Response
+        {
+            $user = new User();
+            $form = $this->createForm(RegistrationFormType::class, $user);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
+            if ($form->isSubmitted() && $form->isValid()) {
+                /** @var string $plainPassword */
+                $plainPassword = $form->get('plainPassword')->getData();
 
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+                // encode the plain password
+                $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            $user->setRoles(['ROLE_USER']);
+                $user->setRoles(['ROLE_USER']);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            $this->addFlash('success', "Your account has been successfully created!");
+                $sender->notifyAdminsOfAccountCreation($user);
 
-            // do anything else you need here, like send an email
+                $this->addFlash('success', "Your account has been successfully created!");
 
-            return $security->login($user, 'form_login', 'main');
+                return $security->login($user, 'form_login', 'main');
+            }
+
+            return $this->render('registration/register.html.twig', [
+                'registrationForm' => $form,
+            ]);
         }
-
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
-        ]);
     }
-}

@@ -48,14 +48,21 @@
         }
 
 
-        #[Route('/comment/{id}/delete', name: 'comment_delete', methods: ['GET'], requirements: ['id'=>'\d+'])]
+        #[Route('/comment/{id}/delete/{token}', name: 'comment_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
         #[IsGranted("ROLE_ADMIN")]
-        public function delete(EntityManagerInterface $em, Comment $comment): Response {
-            $em->remove($comment);
-            $em->flush();
+        public function delete(EntityManagerInterface $em, Comment $comment, string $token): Response
+        {
+            if ($this->isCsrfTokenValid('delete-comment-' . $comment->getId(), $token)) {
+                $em->remove($comment);
+                $em->flush();
+                $this->addFlash('success', 'Comment removed successfully!');
+            } else {
+                $this->addFlash('error', 'Failed to remove comment.');
+            }
+
             return $this->redirectToRoute('wish_list');
         }
-        
+
     }
 
 ?>
