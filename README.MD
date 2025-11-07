@@ -1,0 +1,1 @@
+Simple project for trying out Symfony.
