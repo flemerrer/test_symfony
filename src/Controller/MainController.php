@@ -12,10 +12,14 @@
         #[Route('/', name: 'main_home', methods: ['GET'])]
         public function home(Request $request): Response
         {
-            $firstName = "Bob";
-            $lastName = "Dylan";
+            return $this->redirectToRoute("wish_list");
+        }
+
+        #[Route('/hello', name: 'main_hello', methods: ['GET'])]
+        public function hello(Request $request): Response
+        {
             dump($request);
-            return $this->render("main/home.html.twig", compact("firstName", "lastName"));
+            return $this->render("main/hello.html.twig");
         }
 
         #[Route('/rainbow', name: 'main_rainbow', methods: ['GET'])]

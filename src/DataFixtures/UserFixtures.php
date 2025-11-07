@@ -10,7 +10,6 @@
     class UserFixtures extends Fixture
     {
 
-
         public function __construct(private UserPasswordHasherInterface $usher)
         {
         }
@@ -23,8 +22,9 @@
             $user = new User();
             $user->setFirstName("toto");
             $user->setLastName("lebg");
+            $user->setEmail("toto@admin.fr");
             $user->setRoles(["ROLE_ADMIN"]);
-            $user->setPassword("africa");
+            $user->setPassword($this->usher->hashPassword($user, "africa"));
             $manager->persist($user);
 
             for ($i = 0; $i < 10; $i++) {
