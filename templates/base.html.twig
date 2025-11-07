@@ -22,12 +22,12 @@
 </header>
 <main class="container">
 	{% for label, messages in app.flashes %}
-		{% for message in messages %}
-			<div class="alert-{{ label }}">
-				{{ message }}
-			</div>
+			{% for message in messages %}
+				<div class="card alert-{{ label }}" style="padding: .5rem; margin-bottom:.5rem;background-color: rgba(144,238,144,0.5);">
+					{{ message }}
+				</div>
+			{% endfor %}
 		{% endfor %}
-	{% endfor %}
 	{% block body %}{% endblock %}
 </main>
 <footer class="container">

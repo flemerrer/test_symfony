@@ -2,10 +2,13 @@
 
     namespace App\Controller;
 
+    use App\Entity\Comment;
+    use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
+    use Symfony\Component\Security\Http\Attribute\IsGranted;
 
     class MainController extends AbstractController
     {
@@ -44,6 +47,15 @@
             return $this->render('about.html.twig', []);
         }
 
+
+        #[Route('/comment/{id}/delete', name: 'comment_delete', methods: ['GET'], requirements: ['id'=>'\d+'])]
+        #[IsGranted("ROLE_ADMIN")]
+        public function delete(EntityManagerInterface $em, Comment $comment): Response {
+            $em->remove($comment);
+            $em->flush();
+            return $this->redirectToRoute('wish_list');
+        }
+        
     }
 
 ?>

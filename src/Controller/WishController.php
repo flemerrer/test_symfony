@@ -2,6 +2,8 @@
 
     namespace App\Controller;
 
+    use App\Entity\Comment;
+    use App\Form\CommentType;
     use App\Form\WishType;
     use App\Repository\WishRepository;
     use Doctrine\ORM\EntityManagerInterface;
@@ -56,14 +58,27 @@
             return $this->render('wishes/add.html.twig', ["wishForm" => $form]);
         }
 
-        #[Route('/{id}', name: 'wish_details', methods: ['GET'])]
-        public function details(WishRepository $wishRepository, string $id): Response
+        #[Route('/{id}', name: 'wish_details', methods: ['GET', 'POST'])]
+        public function details(Request $request, EntityManagerInterface $em, WishRepository $wishRepository, string $id): Response
         {
             $wish = $wishRepository->find($id);
             if (!$wish) {
                 return $this->redirectToRoute('wish_list');
             }
-            return $this->render('wishes/details.html.twig', ["wish" => $wish]);
+
+            $comment = new Comment();
+            $form = $this->createForm(CommentType::class, $comment);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $comment->setWish($wish);
+                $comment->setAuthor($this->getUser());
+                $comment->setDateCreated(new \DateTimeImmutable());
+                $em->persist($comment);
+                $em->flush();
+                $this->addFlash('success', 'Comment added successfully!');
+            }
+
+            return $this->render('wishes/details.html.twig', ["wish" => $wish, "commentForm" => $form]);
         }
 
         #[Route('/{id}/edit', name: 'wish_edit', methods: ['GET', 'POST'])]

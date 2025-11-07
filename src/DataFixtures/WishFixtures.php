@@ -2,6 +2,7 @@
 
     namespace App\DataFixtures;
 
+    use App\Entity\Comment;
     use App\Entity\User;
     use App\Entity\Wish;
     use App\Entity\WishCategory;
@@ -47,6 +48,15 @@
                 if ($dateModified) {
                     $wish->setDateModified(\DateTimeImmutable::createFromMutable($dateModified));
                 }
+                $comment = new Comment();
+                $k = $faker->numberBetween(1,5);
+                $comment->setAuthor($this->getReference("user$k", User::class));
+                $dateCreated = $faker->dateTimeBetween("-2 years", 'now');
+                $comment->setDateCreated(\DateTimeImmutable::createFromMutable($dateCreated));
+                $comment->setDescription($faker->text(200));
+                $comment->setRating($faker->numberBetween(1,5));
+                $comment->setWish($wish);
+                $manager->persist($comment);
                 $manager->persist($wish);
             }
 
