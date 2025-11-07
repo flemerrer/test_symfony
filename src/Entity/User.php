@@ -40,12 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank()]
     #[Assert\Length(max: 100)]
     #[ORM\Column(length: 100, nullable: false)]
-    private ?string $firstName = null;
-
-    #[Assert\NotBlank()]
-    #[Assert\Length(max: 100)]
-    #[ORM\Column(length: 100, nullable: false)]
-    private ?string $lastName = null;
+    private ?string $username = null;
 
     public function getId(): ?int
     {
@@ -82,6 +77,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->roles;
     }
 
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(?string $username): void
+    {
+        $this->username = $username;
+    }
+
     /**
      * @param list<string> $roles
      */
@@ -113,27 +118,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // @deprecated, to be removed when upgrading to Symfony 8
     }
 
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): static
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): static
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
 }

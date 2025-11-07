@@ -17,19 +17,15 @@
         public function load(ObjectManager $manager): void
         {
 
-            $faker = \Faker\Factory::create('fr_FR');
-
             $user1 = new User();
-            $user1->setFirstName("grosminet");
-            $user1->setLastName("lebg");
+            $user1->setUsername("grosminet");
             $user1->setEmail("toto@admin.fr");
             $user1->setRoles(["ROLE_ADMIN"]);
             $user1->setPassword($this->usher->hashPassword($user1, "africa"));
             $manager->persist($user1);
 
             $user2 = new User();
-            $user2->setFirstName("titi");
-            $user2->setLastName("leboss");
+            $user2->setUsername("titi");
             $user2->setEmail("titi@planner.fr");
             $user2->setRoles(["ROLE_PLANNER"]);
             $user2->setPassword($this->usher->hashPassword($user2, "africa"));
@@ -37,8 +33,7 @@
 
             for ($i = 0; $i < 10; $i++) {
                 $user = new User();
-                $user->setFirstName($faker->firstName);
-                $user->setLastName($faker->lastName);
+                $user->setUsername("user$i");
                 $user->setEmail("user$i@pandata.fr");
                 $user->setRoles(["ROLE_USER"]);
                 $user->setPassword($this->usher->hashPassword($user, "toto@123"));
