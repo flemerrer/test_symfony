@@ -3,16 +3,51 @@
     namespace App\Controller;
 
     use App\Form\EventSearchType;
-    use App\Models\EventSearch;
-    use App\Repository\CategoryRepository;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-    use Symfony\Component\HttpFoundation\JsonResponse;
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
     use Symfony\Component\Serializer\SerializerInterface;
     use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+    #[Route('/apiTest')]
+    final class ApiTestController extends AbstractController
+    {
+        #[Route('/regions', name: 'api_regionsList')]
+        public function regionsList(SerializerInterface $serializer): Response
+        {
+            // Also works with web uri
+            $content = file_get_contents('https://geo.api.gouv.fr/regions');
+//        $regionsArray = $serializer->decode($content, 'json');
+            // Don't forget the array concatenation and its weird syntax here
+//        $regions = $serializer->denormalize($regionsArray, Region::class . '[]');
+            // Eq to :
+            $regions = $serializer->deserialize($content, Region::class . '[]', 'json');
+            return $this->render('api/regions.html.twig', ["regions" => $regions]);
+        }
+
+        #[Route('/events', name: 'api_eventsList', methods: ['GET', 'POST'])]
+        public function eventsList(Request $request, SerializerInterface $serializer, HttpClientInterface $httpClient): Response
+        {
+            $BASE_URL = 'https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/evenements-publics-openagenda/records?limit=25';
+            $form = $this->createForm(EventSearchType::class);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $city = ucfirst($form->get('city')->getData());
+                $date = $form->get('dateEvent')->getData()->format('Y-m-d');
+                $response = $httpClient->request("GET",
+                    $BASE_URL . "&refine=location_city%3A" . $city . "&refine=firstdate_begin%3A" . $date);
+            } else {
+                $response = $httpClient->request("GET", $BASE_URL);
+            }
+
+            $resultsArray = $serializer->decode($response->getContent(), 'json');
+            $results = $serializer->denormalize($resultsArray["results"], Event::class . '[]');
+
+            return $this->render('api/events.html.twig', ["events" => $results, "eventSearch" => $form]);
+        }
+    }
 
     class Region
     {
@@ -41,7 +76,8 @@
 
     }
 
-    class Event {
+    class Event
+    {
         private ?string $title_fr = "";
         private ?string $thumbnail = "";
         private ?string $description_fr = "";
@@ -123,51 +159,3 @@
 
     }
 
-    #[Route('/api')]
-    final class ApiController extends AbstractController
-    {
-        #[Route('/regions', name: 'api_regionsList')]
-        public function regionsList(SerializerInterface $serializer): Response
-        {
-            // Also works with web uri
-            $content = file_get_contents('https://geo.api.gouv.fr/regions');
-//        $regionsArray = $serializer->decode($content, 'json');
-            // Don't forget the array concatenation and its weird syntax here
-//        $regions = $serializer->denormalize($regionsArray, Region::class . '[]');
-            // Eq to :
-            $regions = $serializer->deserialize($content, Region::class . '[]', 'json');
-            return $this->render('api/regions.html.twig', ["regions" => $regions]);
-        }
-
-        #[Route('/categories', name: 'api_list', methods: ['GET'])]
-        public function list(CategoryRepository $repository, SerializerInterface $serializer): JsonResponse
-        {
-            $data = $repository->findBy([], ["name" => "ASC"]);
-//        $result = $serializer->serialize($data, 'json', ["groups" => 'getCategoriesFull']);
-//        return new JsonResponse($result, Response::HTTP_OK, [], true);
-            // Eq to :
-            return $this->json($data, 200, [], ["groups" => 'getCategoriesFull']);
-        }
-
-        #[Route('/events', name: 'api_eventsList', methods: ['GET', 'POST'])]
-        public function eventsList(Request $request, SerializerInterface $serializer, HttpClientInterface $httpClient): Response
-        {
-            $BASE_URL = 'https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/evenements-publics-openagenda/records?limit=25';
-            $form = $this->createForm(EventSearchType::class);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $city = ucfirst($form->get('city')->getData());
-                $date = $form->get('dateEvent')->getData()->format('Y-m-d');
-                $response = $httpClient->request("GET",
-                    $BASE_URL."&refine=location_city%3A".$city."&refine=firstdate_begin%3A".$date);
-            } else {
-                $response = $httpClient->request("GET", $BASE_URL);
-            }
-
-            $resultsArray = $serializer->decode($response->getContent(), 'json');
-            $results = $serializer->denormalize($resultsArray["results"], Event::class . '[]');
-
-            return $this->render('api/events.html.twig', ["events" => $results, "eventSearch" => $form]);
-        }
-    }
