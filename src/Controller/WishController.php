@@ -5,12 +5,13 @@
     use App\Entity\Comment;
     use App\Form\CommentType;
     use App\Form\WishType;
+    use App\Helper\CensorService;
     use App\Helper\WishService;
     use App\Repository\WishRepository;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\DependencyInjection\Attribute\Autowire;
-    use Symfony\Component\HttpFoundation\File\Exception\FileException;
+    use Symfony\Component\HttpFoundation\File\Exception\UploadException;
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
     use App\Entity\Wish;
@@ -22,8 +23,8 @@
     {
 
         public function __construct(
-            private readonly WishService $service,
-            private readonly EntityManagerInterface $em
+            private readonly WishService            $service,
+            private readonly EntityManagerInterface $em,
         )
         {
         }
@@ -37,8 +38,7 @@
         }
 
         #[Route('/add', name: 'wish_add', methods: ['GET', 'POST'])]
-        public function add(Request                                                                 $request, SluggerInterface $slugger,
-                            #[Autowire('%kernel.project_dir%/public/uploads/illustrations')] string $uploadedImagesDir): Response
+        public function add(Request $request): Response
         {
             $wish = new Wish();
             $form = $this->createForm(WishType::class, $wish);
@@ -48,11 +48,17 @@
                 $file = $form->get('illustration')->getData();
                 if ($file) {
                     try {
-                        $this->service->saveImage($slugger, $uploadedImagesDir, $wish, $file);
-                    } catch (FileException $e) {
+                        $newFileName = $this->service->upload($file);
+                        $wish->setImageFilename($newFileName);
+                    } catch (UploadException $e) {
                         $this->addFlash('error', $e->getMessage());
                     }
                 }
+                $censoredTitle = $this->service->purify($wish->getTitle());
+                $wish->setTitle($censoredTitle);
+                $censoredDescription = $this->service->purify($wish->getDescription());
+                $wish->setDescription($censoredDescription);
+                $wish->setDateCreated(new \DateTimeImmutable());
                 $this->em->persist($wish);
                 $this->em->flush();
                 $this->addFlash('success', 'Wish added successfully!');
@@ -88,7 +94,7 @@
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
 
-                if ($form->has('deleteCb')) {
+                if ($form->has('deleteCb') && $form->get('deleteCb')->getData() == true) {
                     unlink($uploadedImagesDir . '/' . $wish->getImageFilename());
                     $wish->setImageFilename('');
                 }
@@ -96,8 +102,9 @@
                 $file = $form->get('illustration')->getData();
                 if ($file) {
                     try {
-                        $this->service->saveImage($slugger, $uploadedImagesDir, $wish, $file);
-                    } catch (FileException $e) {
+                        $newFileName = $this->service->upload($file);
+                        $wish->setImageFilename($newFileName);
+                    } catch (UploadException $e) {
                         $this->addFlash('error', $e->getMessage());
                     }
                 }

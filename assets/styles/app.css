@@ -31,3 +31,7 @@ main {
 .card-header> img {
     max-height: 350px;
 }
+
+img {
+    max-width: 50%;
+}

@@ -4,7 +4,7 @@
 
     use App\Entity\User;
     use App\Form\RegistrationFormType;
-    use App\Helper\NotificationSender;
+    use App\Helper\NotificationSenderServive;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Bundle\SecurityBundle\Security;
@@ -17,7 +17,7 @@
     {
         #[Route('/register', name: 'app_register')]
         public function register(
-            NotificationSender          $sender,
+            NotificationSenderServive   $sender,
             Request                     $request,
             UserPasswordHasherInterface $userPasswordHasher,
             Security                    $security,
