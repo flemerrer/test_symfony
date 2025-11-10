@@ -5,6 +5,7 @@ use App\Entity\Wish;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\Exception\UploadException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class WishService
@@ -36,7 +37,7 @@ class WishService
         return $newFilename;
     }
 
-    public function addComment(Wish $wish, Comment $comment, User $user){
+    public function addComment(Wish $wish, Comment $comment, UserInterface $user){
         $comment->setWish($wish);
         $comment->setAuthor($user);
         $comment->setDateCreated(new \DateTimeImmutable());

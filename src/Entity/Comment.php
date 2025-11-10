@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -91,7 +92,7 @@ class Comment
         return $this->author;
     }
 
-    public function setAuthor(?User $author): static
+    public function setAuthor(User|UserInterface $author): static
     {
         $this->author = $author;
 
