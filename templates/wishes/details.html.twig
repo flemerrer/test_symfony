@@ -3,8 +3,8 @@
 {% block body %}
 	<div class="card" style="padding: 1rem">
 		{% if is_granted('ROLE_ADMIN') %}
-			<div style="display: flex;flex-direction: row;justify-content: end;"><a class="btn btn-primary btn-small" href={{ path('wish_edit', { id: wish.id }) }}>Edit Wish</a>
-				<a class="btn btn-danger btn-small"
+			<div style="display: flex;flex-direction: row;justify-content: end;"><a class="btn btn-primary" href={{ path('wish_edit', { id: wish.id }) }}>Edit Wish</a>
+				<a class="btn btn-danger"
 				   style="margin-left: .25rem"
 				   href={{ path('wish_delete', { id: wish.id, token: csrf_token('delete-wish-'~wish.id) }) }}>Delete
 					Wish</a></div>
@@ -20,7 +20,7 @@
 			<h2>Leave a comment</h2>
 			{{ form_start(commentForm) }}
 			{{ form_widget(commentForm) }}
-			<button type="submit" class="btn btn-primary btn-small">Add Comment</button>
+			<button type="submit" class="btn btn-primary">Add Comment</button>
 			{{ form_end(commentForm) }}
 		{% endif %}
 		{% if wish.comments | length > 0 %}
@@ -31,7 +31,7 @@
 					<p>{{ comment.displayRating }}</p>
 					<p>{{ comment.description | nl2br }}</p>
 					{% if is_granted('ROLE_ADMIN') %}
-						<div><a class="btn btn-danger btn-small"
+						<div><a class="btn btn-danger"
 								href={{ path('comment_delete', { id: comment.id, token: csrf_token('delete-comment-'~comment.id) }) }}>Delete
 								Comment</a></div>
 					{% endif %}

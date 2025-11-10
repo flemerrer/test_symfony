@@ -1,1 +1,1 @@
-Simple project for trying out Symfony.
+Simple project for trying out Symfony, with the objective of building a POC website (bucket list) from example (courses and teachers).

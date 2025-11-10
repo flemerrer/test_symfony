@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>Nos régions</h1>
+	<ul>
+		{% for region in regions %}
+			<li>{{ region.nom }} ({{ region.code }})</li>
+		{% endfor %}
+	</ul>
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}

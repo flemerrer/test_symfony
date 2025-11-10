@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>Événements</h1>
+	{{ form_start(eventSearch) }}
+	{{ form_widget(eventSearch) }}
+	<button type="submit" class="btn btn-primary">Search</button>
+	<a class="btn btn-secondary" href="{{ path('api_eventsList') }}">Reset</a>
+	{{ form_end(eventSearch) }}
+	{% for event in events %}
+		<div class="event-div card" style="padding: .5rem;margin: .5rem 0;">
+			<div class="event-cell daterange">
+				<p>{{ event.getDateRangeFr }}</p>
+			</div>
+			<div class="event-cell img">
+				<img src="{{ event.thumbnail }}" alt="image {{ event.getTitleFr | lower }}">
+				</div>
+			<div class="event-cell details">
+				<h4><a href="{{ event.getCanonicalurl }}">{{ event.getTitleFr }}</a></h4>
+				<p>{{ event.getLocationName }}</p>
+				<p>{{ event.getLocationAddress }}</>
+				<p>{{ event.getDescriptionFr }}</p>
+			</div>
+		</div>
+	{% endfor %}
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
