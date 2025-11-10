@@ -4,6 +4,7 @@
 
     use App\Entity\Comment;
     use Doctrine\ORM\EntityManagerInterface;
+    use JetBrains\PhpStorm\NoReturn;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,7 @@
     class MainController extends AbstractController
     {
         #[Route('/', name: 'main_home', methods: ['GET'])]
-        public function home(Request $request): Response
+        public function home(): Response
         {
             return $this->redirectToRoute("wish_list");
         }
@@ -35,7 +36,7 @@
             ]);
         }
 
-        #[Route('/test', name: 'main_test', methods: ['GET'])]
+        #[NoReturn] #[Route('/test', name: 'main_test', methods: ['GET'])]
         public function test(Request $request): Response
         {
             dd($request);
@@ -44,11 +45,11 @@
         #[Route('/about', name: 'main_about', methods: ['GET'])]
         public function about(): Response
         {
-            return $this->render('about.html.twig', []);
+            return $this->render('about.html.twig');
         }
 
 
-        #[Route('/comment/{id}/delete/{token}', name: 'comment_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
+        #[Route('/comment/{id}/delete/{token}', name: 'comment_delete', requirements: ['id' => '\d+'], methods: ['GET'])]
         #[IsGranted("ROLE_ADMIN")]
         public function delete(EntityManagerInterface $em, Comment $comment, string $token): Response
         {
@@ -64,5 +65,3 @@
         }
 
     }
-
-?>

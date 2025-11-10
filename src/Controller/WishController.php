@@ -5,9 +5,9 @@
     use App\Entity\Comment;
     use App\Form\CommentType;
     use App\Form\WishType;
-    use App\Helper\CensorService;
     use App\Helper\WishService;
     use App\Repository\WishRepository;
+    use DateTimeImmutable;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -16,7 +16,6 @@
     use Symfony\Component\HttpFoundation\Response;
     use App\Entity\Wish;
     use Symfony\Component\Routing\Attribute\Route;
-    use Symfony\Component\String\Slugger\SluggerInterface;
 
     #[Route('/wishes')]
     class WishController extends AbstractController
@@ -58,7 +57,7 @@
                 $wish->setTitle($censoredTitle);
                 $censoredDescription = $this->service->purify($wish->getDescription());
                 $wish->setDescription($censoredDescription);
-                $wish->setDateCreated(new \DateTimeImmutable());
+                $wish->setDateCreated(new DateTimeImmutable());
                 $this->em->persist($wish);
                 $this->em->flush();
                 $this->addFlash('success', 'Wish added successfully!');
@@ -88,13 +87,13 @@
         }
 
         #[Route('/{id}/edit', name: 'wish_edit', methods: ['GET', 'POST'])]
-        public function edit(Wish $wish, Request $request, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/illustrations')] string $uploadedImagesDir): Response
+        public function edit(Wish $wish, Request $request, #[Autowire('%kernel.project_dir%/public/uploads/illustrations')] string $uploadedImagesDir): Response
         {
             $form = $this->createForm(WishType::class, $wish);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
 
-                if ($form->has('deleteCb') && $form->get('deleteCb')->getData() == true) {
+                if ($form->has('deleteCb') && $form->get('deleteCb')->getData()) {
                     unlink($uploadedImagesDir . '/' . $wish->getImageFilename());
                     $wish->setImageFilename('');
                 }
@@ -109,7 +108,7 @@
                     }
                 }
 
-                $wish->setDateModified(new \DateTimeImmutable());
+                $wish->setDateModified(new DateTimeImmutable());
                 $this->em->persist($wish);
                 $this->em->flush();
                 $this->addFlash('success', 'Wish modified successfully!');
@@ -119,7 +118,7 @@
         }
 
 
-        #[Route('/{id}/delete/{token}', name: 'wish_delete', methods: ['GET'], requirements: ['id' => '\d+'])]
+        #[Route('/{id}/delete/{token}', name: 'wish_delete', requirements: ['id' => '\d+'], methods: ['GET'])]
         public function delete(Wish $wish, string $token): Response
         {
 
@@ -133,5 +132,3 @@
             return $this->redirectToRoute('wish_details', ['id' => $wish->getId()]);
         }
     }
-
-?>

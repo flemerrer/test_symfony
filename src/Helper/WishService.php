@@ -1,6 +1,5 @@
 <?php namespace App\Helper;
 use App\Entity\Comment;
-use App\Entity\User;
 use App\Entity\Wish;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\Exception\UploadException;
