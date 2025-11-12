@@ -20,7 +20,6 @@
             $course1->setContent("Curabitur est gravida et libero vitae dictum.");
             $course1->setPublished(true);
             $course1->setDuration(120);
-            $course1->setDateCreated(new \DateTimeImmutable());
             $course1->setCategory($this->getReference("category1", Category::class));
             $manager->persist($course1);
 
@@ -29,7 +28,6 @@
             $course2->setContent("Curabitur est gravida et libero vitae dictum.");
             $course2->setPublished(true);
             $course2->setDuration(180);
-            $course2->setDateCreated(new \DateTimeImmutable());
             $course2->setCategory($this->getReference("category2", Category::class));
             $manager->persist($course2);
 

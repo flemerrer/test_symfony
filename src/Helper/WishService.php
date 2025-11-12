@@ -39,7 +39,6 @@ class WishService
     public function addComment(Wish $wish, Comment $comment, UserInterface $user){
         $comment->setWish($wish);
         $comment->setAuthor($user);
-        $comment->setDateCreated(new \DateTimeImmutable());
     }
 }
 

@@ -43,6 +43,7 @@ class Course
     public function __construct()
     {
         $this->trainers = new ArrayCollection();
+        $this->setDateCreated(new \DateTimeImmutable());
     }
 
     public function getId(): ?int

@@ -41,6 +41,14 @@ class Comment
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $dateModified = null;
 
+    /**
+     * @param int|null $id
+     */
+    public function __construct()
+    {
+        $this->setDateCreated(new \DateTimeImmutable());
+    }
+
     public function getId(): ?int
     {
         return $this->id;

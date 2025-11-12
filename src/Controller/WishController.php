@@ -57,7 +57,6 @@
                 $wish->setTitle($censoredTitle);
                 $censoredDescription = $this->service->purify($wish->getDescription());
                 $wish->setDescription($censoredDescription);
-                $wish->setDateCreated(new DateTimeImmutable());
                 $this->em->persist($wish);
                 $this->em->flush();
                 $this->addFlash('success', 'Wish added successfully!');

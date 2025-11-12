@@ -32,7 +32,6 @@
             $form = $this->createForm(CourseType::class, $course);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $course->setDateCreated(new DateTimeImmutable());
                 $em->persist($course);
                 $em->flush();
                 return $this->redirectToRoute('course_show', ['id' => $course->getId()]);

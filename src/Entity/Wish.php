@@ -50,6 +50,7 @@
         public function __construct()
         {
             $this->comments = new ArrayCollection();
+            $this->setDateCreated(new \DateTimeImmutable());
         }
 
         public function getImageFilename(): string

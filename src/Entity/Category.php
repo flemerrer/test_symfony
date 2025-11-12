@@ -40,6 +40,7 @@ class Category
     public function __construct()
     {
         $this->courses = new ArrayCollection();
+        $this->dateCreated = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

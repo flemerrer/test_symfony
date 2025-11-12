@@ -18,7 +18,6 @@
     final class ApiCategoryController extends AbstractController
     {
 
-
         public function __construct(private readonly SerializerInterface $serializer, private readonly EntityManagerInterface $em)
         {
         }
@@ -33,23 +32,37 @@
             return $this->json($data, 200, [], ["groups" => 'getCategoriesFull']);
         }
 
-        #[Route('/', name: 'api_categories_create', methods: ['POST'])]
-        public function create(Request $request): JsonResponse
-        {
+        #[Route('/{id}', name: 'api_categories_create', methods: ['POST'])]
+        public function create(
+            Request $request,
+            SerializerInterface $serializer,
+            EntityManagerInterface $em,
+        ): JsonResponse {
             $body = $request->getContent();
-            $category = $this->serializer->deserialize($body, Category::class, 'json');
-            $category->setDateCreated(new \DateTimeImmutable());
-            $this->em->persist($category);
-            $this->em->flush();
-            return $this->json(
-                $category,
-                Response::HTTP_CREATED,
-                ["Location" => $this->generateUrl(
-                    "api_categories_read",
-                    ["id" => $category->getId(),
-                        UrlGeneratorInterface::ABSOLUTE_PATH
-                    ])]);
+            $category = $serializer->deserialize($body, Category::class, 'json');
+            $em->persist($category);
+            $em->flush();
+            return $this->json(null, Response::HTTP_CREATED, [
+                'Location' => $this->generateUrl('api_categories_read', ['category' => $category->getId()])
+            ]);
         }
+
+//        #[Route('/', name: 'api_categories_create', methods: ['POST'])]
+//        public function create(Request $request): JsonResponse
+//        {
+//            $body = $request->getContent();
+//            $category = $this->serializer->deserialize($body, Category::class, 'json');
+//            $this->em->persist($category);
+//            $this->em->flush();
+//            return $this->json(
+//                $category,
+//                Response::HTTP_CREATED,
+//                ["Location" => $this->generateUrl(
+//                    "api_categories_read",
+//                    ["id" => $category->getId(),
+//                        UrlGeneratorInterface::ABSOLUTE_PATH
+//                    ])]);
+//        }
 
         #[Route('/{id}', name: 'api_categories_read', requirements: ["id" => "\d+"], methods: ['GET'])]
         public function read(?Category $category): JsonResponse
@@ -57,9 +70,7 @@
             if (!$category) {
                 return new JsonResponse(null, Response::HTTP_NOT_FOUND);
             }
-
-            $result = $this->serializer->serialize($category, "json", ["groups" => "getCategories"]);
-            return new JsonResponse($result, Response::HTTP_OK, [], true);
+            return $this->json($category, Response::HTTP_OK, [], ["groups" => "getCategories"]);
         }
 
 
@@ -88,7 +99,8 @@
         }
 
         #[Route('/api/categories/{id}', name: 'api_categories_delete', requirements: ["id" => "\d+"], methods: ['DELETE'])]
-        public function delete(?Category $category): JsonResponse {
+        public function delete(?Category $category): JsonResponse
+        {
             if (!$category) {
                 return new JsonResponse(null, Response::HTTP_NOT_FOUND);
             }
