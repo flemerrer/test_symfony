@@ -2,6 +2,9 @@
 
     namespace App\Entity;
 
+    use ApiPlatform\Metadata\ApiResource;
+    use ApiPlatform\Metadata\Get;
+    use ApiPlatform\Metadata\GetCollection;
     use App\Models\CreateCategoryDTO;
     use App\Repository\CategoryRepository;
     use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +13,13 @@
     use Symfony\Component\Serializer\Annotation\Groups;
     use Symfony\Component\Validator\Constraints as Assert;
 
+//    #[ApiResource(
+//        operations: [
+//            new Get(normalizationContext: ['groups' => 'getCategories']),
+//            new GetCollection(normalizationContext: ['groups' => 'getCategories']),
+//            new Post(denormalizationContext: ['groups' => 'postCategory']),]
+//    )]
+//        #[ApiResource(normalizationContext: ['groups' => 'getCategories'])]
     #[ORM\Entity(repositoryClass: CategoryRepository::class)]
     class Category
     {
@@ -22,7 +32,7 @@
         #[ORM\Column(length: 180, unique: true)]
         #[Assert\NotBlank]
         #[Assert\Length(min: 2, max: 180)]
-        #[Groups(['getCategories', 'getCategoriesFull'])]
+        #[Groups(['getCategories', 'getCategoriesFull', 'postCategory'])]
         private ?string $name = null;
 
         #[ORM\Column]

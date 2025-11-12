@@ -17,7 +17,7 @@
     use Symfony\Component\Serializer\SerializerInterface;
     use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-    #[Route('/api/categories')]
+    #[Route('/apiTest/categories')]
     final class ApiCategoryController extends AbstractController
     {
 

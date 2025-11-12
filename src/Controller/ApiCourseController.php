@@ -15,7 +15,7 @@
 
     final class ApiCourseController extends AbstractController
     {
-        #[Route('/api/courses', name: 'api_courses_create', methods: ['POST'])]
+        #[Route('/apiTest/courses', name: 'api_courses_create', methods: ['POST'])]
         public function create(
             Request                $request,
             CategoryRepository     $categoryRepository,
