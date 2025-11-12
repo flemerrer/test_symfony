@@ -6,6 +6,7 @@ use App\Repository\WishTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: WishTypeRepository::class)]
 class WishCategory
@@ -16,6 +17,7 @@ class WishCategory
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['getWishes'])]
     private ?string $name = null;
 
     /**

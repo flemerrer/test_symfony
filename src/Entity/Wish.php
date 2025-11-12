@@ -2,14 +2,24 @@
 
     namespace App\Entity;
 
+    use ApiPlatform\Metadata\ApiResource;
+    use ApiPlatform\Metadata\Get;
+    use ApiPlatform\Metadata\GetCollection;
     use App\Repository\WishRepository;
     use Doctrine\Common\Collections\ArrayCollection;
     use Doctrine\Common\Collections\Collection;
     use Doctrine\DBAL\Types\Types;
     use Doctrine\ORM\Mapping as ORM;
     use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+    use Symfony\Component\Serializer\Attribute\Groups;
     use Symfony\Component\Validator\Constraints as Assert;
 
+    #[ApiResource(
+        operations: [
+            new Get(normalizationContext: ['groups' => 'getWishes']),
+            new GetCollection(normalizationContext: ['groups' => 'getWishes'])
+        ]
+    )]
     #[UniqueEntity('title', message: 'This wish already exists!')]
     #[ORM\Entity(repositoryClass: WishRepository::class)]
     class Wish
@@ -17,21 +27,26 @@
         #[ORM\Id]
         #[ORM\GeneratedValue]
         #[ORM\Column(type: Types::INTEGER, nullable: false)]
+        #[Groups(['getWishes'])]
         private ?int $id;
 
         #[Assert\NotBlank(message: 'Please enter a title for your wish.')]
         #[Assert\Length(min: 2, max: 50, minMessage: 'Min 2 characters!', maxMessage: 'Max 250 characters!')]
         #[ORM\Column(type: Types::STRING, length: 250, nullable: false)]
+        #[Groups(['getWishes'])]
         private ?string $title;
         #[Assert\NotBlank(message: 'Please enter a description (min 10 chars).')]
         #[Assert\Length(min: 10, max: 2000, minMessage: 'Min 10 characters!', maxMessage: 'Max 2000 characters!')]
         #[ORM\Column(type: Types::STRING)]
+        #[Groups(['getWishes'])]
         private ?string $description;
         #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishes')]
+        #[Groups(['getWishes'])]
         private ?User $author;
         #[ORM\Column(type: Types::BOOLEAN, nullable: false)]
         private ?bool $published = null;
         #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
+        #[Groups(['getWishes'])]
         private ?\DateTimeImmutable $dateCreated = null;
         #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
         private ?\DateTimeImmutable $dateModified = null;
@@ -39,12 +54,14 @@
         private ?string $imageFilename = null;
 
         #[ORM\ManyToOne(inversedBy: 'wishes')]
+        #[Groups(['getWishes'])]
         private ?WishCategory $wishCategory = null;
 
         /**
          * @var Collection<int, Comment>
          */
         #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'wish')]
+        #[Groups(['getWishes'])]
         private Collection $comments;
 
         public function __construct()

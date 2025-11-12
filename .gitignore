@@ -23,6 +23,8 @@
 
 ### LOCAL
 /.idea
-.gitignore
 migrations
 public/uploads
+composer.lock
+symfony.lock
+./**.lock

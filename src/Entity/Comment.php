@@ -6,6 +6,7 @@ use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -18,6 +19,7 @@ class Comment
 
     #[Assert\Length(max:2000)]
     #[ORM\Column(length: 2000, nullable: true)]
+    #[Groups(['getWishes'])]
     private ?string $description = null;
 
     #[Assert\NotBlank]
@@ -25,6 +27,7 @@ class Comment
      message:"Pick a number between 1 and 5.",
      value:5)]
     #[ORM\Column]
+    #[Groups(['getWishes'])]
     private ?int $rating = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
@@ -33,9 +36,11 @@ class Comment
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['getWishes'])]
     private ?User $author = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['getWishes'])]
     private ?\DateTimeImmutable $dateCreated = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
