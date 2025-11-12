@@ -16,9 +16,10 @@
 
     #[ApiResource(
         operations: [
-            new Get(normalizationContext: ['groups' => 'getWishes']),
-            new GetCollection(normalizationContext: ['groups' => 'getWishes'])
-        ]
+            new Get(),
+            new GetCollection()
+        ],
+        normalizationContext: ['groups' => 'getWishes']
     )]
     #[UniqueEntity('title', message: 'This wish already exists!')]
     #[ORM\Entity(repositoryClass: WishRepository::class)]
