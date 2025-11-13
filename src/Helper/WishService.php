@@ -40,6 +40,10 @@ class WishService
         $comment->setWish($wish);
         $comment->setAuthor($user);
     }
+
+    public function truncate(int $maxLen, string $string): string{
+        return mb_substr($string, 0, $maxLen, 'UTF-8') . '...';
+    }
 }
 
 ?>
