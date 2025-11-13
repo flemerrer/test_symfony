@@ -26,7 +26,7 @@
             } elseif($duration < 10) {
                 return $duration * 850;
             } else {
-                return $duration * 750;
+                return $duration * 700;
             }
         }
     }

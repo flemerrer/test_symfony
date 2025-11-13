@@ -1,23 +1,41 @@
 <?php
 
-namespace App\Tests\Helper;
+    namespace App\Tests\Helper;
 
-use App\Entity\Course;
-use App\Helper\TrainingService;
-use App\Repository\CourseRepository;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+    use App\Entity\Course;
+    use App\Helper\TrainingService;
+    use App\Repository\CourseRepository;
+    use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class TrainingServiceTest extends KernelTestCase
-{
-    public function testGetCostReturnsCorrectAmount(): void
+    class TrainingServiceTest extends KernelTestCase
     {
-        $course = new Course();
-        $course->setDuration(6);
-        $mockRepository = $this->createMock(CourseRepository::class);
-        $mockRepository->method('find')->willReturn($course);
-        $trainingService = new TrainingService($mockRepository);
-        $cost = $trainingService->getCost(1);
 
-        $this->assertEquals(850*6, $cost);
+        public static function getDurationAndExpectedCost(): array
+        {
+            return [
+                [3, 1000 * 3],
+                [6, 850 * 6],
+                [10, 700 * 10]
+            ];
+        }
+
+        /**
+         * @dataProvider getDurationAndExpectedCost
+         */
+        public function testGetCostReturnsCorrectAmount(int $duration, int $expectedCost): void
+        {
+            $course = new Course();
+            $course->setDuration($duration);
+
+            $mockRepository = $this->createMock(CourseRepository::class);
+            $mockRepository
+                ->expects($this->once())
+                ->method('find')
+                ->with(1)
+                ->willReturnOnConsecutiveCalls($course);
+
+            $trainingService = new TrainingService($mockRepository);
+
+            $this->assertEquals($expectedCost, $trainingService->getCost(1));
+        }
     }
-}
