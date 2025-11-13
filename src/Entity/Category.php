@@ -61,7 +61,7 @@
 
         public function getName(): ?string
         {
-            return $this->name;
+            return mb_strtoupper($this->name);
         }
 
         public function setName(string $name): static
