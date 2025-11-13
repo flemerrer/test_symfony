@@ -28,7 +28,7 @@
         {
         }
 
-        #[Route('/', name: 'wish_list', methods: ['GET'])]
+        #[Route('', name: 'wish_list', methods: ['GET'])]
         public function bucketList(WishRepository $wishRepository): Response
         {
             $wishes = $wishRepository->getAllWishes();

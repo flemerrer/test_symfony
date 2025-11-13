@@ -13,7 +13,7 @@
 
     class MainController extends AbstractController
     {
-        #[Route('/', name: 'main_home', methods: ['GET'])]
+        #[Route('', name: 'main_home', methods: ['GET'])]
         public function home(): Response
         {
             return $this->redirectToRoute("wish_list");

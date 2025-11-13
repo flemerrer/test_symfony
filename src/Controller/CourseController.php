@@ -15,7 +15,7 @@
     #[Route('/courses')]
     class CourseController extends AbstractController
     {
-        #[Route('/', name: 'course_home', methods: ['GET'])]
+        #[Route('', name: 'course_home', methods: ['GET'])]
         public function home(CourseRepository $courseRepository): Response
         {
 //            $courses = $courseRepository->findAll();

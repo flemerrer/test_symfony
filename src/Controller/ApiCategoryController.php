@@ -25,7 +25,7 @@
         {
         }
 
-        #[Route('/', name: 'api_categories_list', methods: ['GET'])]
+        #[Route('', name: 'api_categories_list', methods: ['GET'])]
         public function list(CategoryRepository $repository): JsonResponse
         {
             $data = $repository->findBy([], ["name" => "ASC"]);
@@ -35,7 +35,7 @@
             return $this->json($data, 200, [], ["groups" => 'getCategoriesFull']);
         }
 
-        #[Route('/', name: 'api_categories_create', methods: ['POST'])]
+        #[Route('', name: 'api_categories_create', methods: ['POST'])]
         public function create(
             #[MapRequestPayload(acceptFormat: 'json')]
             CreateCategoryDTO      $categoryDTO,
