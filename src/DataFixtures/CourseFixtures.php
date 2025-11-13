@@ -19,7 +19,7 @@
             $course1->setName("PHP 8.3");
             $course1->setContent("Curabitur est gravida et libero vitae dictum.");
             $course1->setPublished(true);
-            $course1->setDuration(120);
+            $course1->setDuration(12);
             $course1->setCategory($this->getReference("category1", Category::class));
             $manager->persist($course1);
 
@@ -27,7 +27,7 @@
             $course2->setName("Symfony 6.4");
             $course2->setContent("Curabitur est gravida et libero vitae dictum.");
             $course2->setPublished(true);
-            $course2->setDuration(180);
+            $course2->setDuration(18);
             $course2->setCategory($this->getReference("category2", Category::class));
             $manager->persist($course2);
 
@@ -36,7 +36,7 @@
                 $course->setName($faker->colorName());
                 $course->setContent($faker->text(200));
                 $course->setPublished($faker->boolean(chanceOfGettingTrue: 85));
-                $course->setDuration($faker->numberBetween(30, 180));
+                $course->setDuration($faker->numberBetween(3, 28));
                 $dateCreated = $faker->dateTimeBetween("-2 years", 'now');
                 $course->setDateCreated(\DateTimeImmutable::createFromMutable($dateCreated));
                 $dateModified = $faker->optional(75)->dateTimeBetween($dateCreated, 'now');

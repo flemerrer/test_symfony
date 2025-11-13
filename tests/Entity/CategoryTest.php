@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class CategoryTest extends TestCase
 {
-    public function testSomething(): void
+    public function testGetNameReturnsCapitalizedName(): void
     {
         $category = new Category();
         $category->setName('dépendance circulaire');
