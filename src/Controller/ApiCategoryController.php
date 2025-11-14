@@ -21,7 +21,9 @@
     final class ApiCategoryController extends AbstractController
     {
 
-        public function __construct(private readonly SerializerInterface $serializer, private readonly EntityManagerInterface $em)
+        public function __construct(
+//            private readonly SerializerInterface $serializer,
+            private readonly EntityManagerInterface $em)
         {
         }
 
