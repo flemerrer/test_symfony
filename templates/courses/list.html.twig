@@ -11,6 +11,7 @@
 		<td>Published</td>
 		<td>Created</td>
 		<td>Modified</td>
+		<td>Actions</td>
 		</thead>
 		<tbody>
 		{% for course in courses %}
@@ -26,6 +27,13 @@
 				<td>{{ course.published ? "yes" : "no" }}</td>
 				<td>{{ course.dateCreated }}</td>
 				<td>{{ course.dateModified }}</td>
+				<td>
+					<a  class="btn btn-primary btn-sm" href="{{ path('course_edit', {id: course.id}) }}">Modify</a>
+{#					{% if is_granted(constant('App\\Security\\Voter\\CourseVoter::DELETE'), course) %}#}
+					{% if is_granted('COURSE_DELETE', course) %}
+						<a class="btn btn-danger btn-sm" href={{ path('course_delete', { id: course.id, token: csrf_token('delete-course-'~course.id) }) }}">Delete</a>
+					{% endif %}
+				</td>
 			</tr>
 		{% endfor %}
 		</tbody>

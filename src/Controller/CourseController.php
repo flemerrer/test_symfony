@@ -4,9 +4,11 @@
     use App\Entity\Course;
     use App\Form\CourseType;
     use App\Repository\CourseRepository;
+    use App\Security\Voter\CourseVoter;
     use DateTimeImmutable;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+    use Symfony\Component\ExpressionLanguage\Expression;
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
@@ -80,9 +82,12 @@
             return $this->render('courses/edit.html.twig', ["course" => $course, "courseForm" => $form]);
         }
 
+//        #[isGranted(attribute: new Expression('is_granted("ROLE_ADMIN" and not subject.isPublished()'), subject: 'course')]
         #[Route('/{id}/delete/{token}', name: 'course_delete', requirements: ['id' => '\d+'], methods: ['GET'])]
+        #[IsGranted(CourseVoter::DELETE, 'course')]
         public function delete(Course $course, EntityManagerInterface $em, string $token): Response
         {
+//            if ($this->isGranted("ROLE_ADMIN") && !$course->getPublished()) {}
             if ($this->isCsrfTokenValid('delete-course-' . $course->getId(), $token)) {
                 $em->remove($course);
                 $em->flush();
